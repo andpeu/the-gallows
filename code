@@ -1,0 +1,104 @@
+
+#include <iostream>
+#include <string>
+#include <cstring>
+#include <fstream>
+#include <ostream>
+#include <vector>
+#include <time.h>
+
+using namespace std;
+
+void drawing(int attemps) {
+    if (attemps == 10) {
+        cout << " ";
+    }
+    else if (attemps == 9) {
+        cout << "________________";
+    }
+    else if (attemps == 8) {
+        cout << "\n |\n |\n |\n |\n |\n |\n |\n |\n |\n |\n________________";
+    }
+    else if (attemps == 7) {
+        cout << "\n________________\n |\n |\n |\n |\n |\n |\n |\n |\n |\n |\n________________";
+    }
+    else if (attemps == 6) {
+       cout << "\n________________\n |       \\\n |\n |\n |\n |\n |\n |\n |\n |\n |\n________________";
+    }
+    else if (attemps == 5) {
+        cout << "\n________________\n |       \\\n |       O\n |\n |\n |\n |\n |\n |\n |\n |\n________________";
+    }
+    else if (attemps == 4) {
+        cout << "\n________________\n |       \\\n |       O\n |       |\n |\n |\n |\n |\n |\n |\n |\n________________";
+    }
+    else if (attemps == 3) {
+        cout << "\n________________\n |       \\\n |       O\n |      /|\n |\n |\n |\n |\n |\n |\n |\n________________";
+    }
+    else if (attemps == 2) {
+        cout << "\n________________\n |       \\\n |       O\n |      /|\\\n |\n |\n |\n |\n |\n |\n |\n________________";
+    }
+    else if (attemps == 1) {
+        cout << "\n________________\n |       \\\n |       O\n |      /|\\\n |       /\n |\n |\n |\n |\n |\n |\n________________";
+    }
+    else if (attemps == 0) {
+        cout << "\n________________\n |       \\\n |       O\n |      /|\\\n |       /\\\n |\n |\n |\n |\n |\n |\n________________";
+    }
+}
+
+int main()
+{
+    srand(time(0));
+    setlocale(LC_ALL, "rus");
+    setlocale(LC_CTYPE, ".1251");
+    int n = 5, random = rand()%n+1;
+    ifstream in("words.txt");
+    string word;
+    for (int i = 0; i < random; i++)
+    {
+        getline(in, word);
+    }
+    cout << "Слово: " << word << endl;
+    char* guess = new char[word.length()+1];
+    guess = &word[0];
+    char input;
+    int attemp = 10, count = 0;
+    while (true) {
+        string name;
+        cout << "Введите своё имя: ";
+        getline(cin, name);
+        while (attemp != 0) {
+            cout << "Кол-во попыток: " << attemp << endl;
+            cout << "Введите букву(ы): ";
+            cin >> input;
+            if (input == guess[count]) {
+                cout << "\nВы угадали!" << endl;
+                count++;
+                cout << "Слово: ";
+                for (int i = 0; i < count; i++)
+                {
+                    cout << guess[i] << " ";
+                }
+                cout << endl;
+            }
+            else {
+                cout << "Вы не угадали." << endl;
+                attemp--;
+                drawing(attemp);
+                cout << endl;
+            }
+            if (count == word.length()) { break; }
+            if (attemp == 0) { cout << "Попытки закончились. Человечек повесился :("; }
+        }
+        ofstream out("leaderboard.txt", ios::out);
+        if (out.is_open()) { 
+            out << "Имя\tКол-во ошибок\n";
+            out << name << "\t: " << 10 - attemp; 
+        }
+        cout << "Продолжить? (да-1/нет-2)\n";
+        int input;
+        cin >> input;
+        if (input == 1) { continue; }
+        else { break; }
+    }
+    return 0;
+}
