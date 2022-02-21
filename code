@@ -50,22 +50,27 @@ int main()
     srand(time(0));
     setlocale(LC_ALL, "rus");
     setlocale(LC_CTYPE, ".1251");
-    int n = 5, random = rand()%n+1;
+    int n = 5, random;
     ifstream in("words.txt");
     string word;
+    random = rand() % n + 1;
     for (int i = 0; i < random; i++)
     {
         getline(in, word);
     }
     cout << "Слово: " << word << endl;
-    char* guess = new char[word.length()+1];
+    char* guess = new char[word.length() + 1];
     guess = &word[0];
+    string name;
     char input;
     int attemp = 10, count = 0;
+    ofstream out("leaderboard.txt", ios::out);
+    if (out.is_open()) {
+        out << "Имя:\tКол-во ошибок: " << endl;
+    }
     while (true) {
-        string name;
         cout << "Введите своё имя: ";
-        getline(cin, name);
+        cin >> name;
         while (attemp != 0) {
             cout << "Кол-во попыток: " << attemp << endl;
             cout << "Введите букву(ы): ";
@@ -89,16 +94,27 @@ int main()
             if (count == word.length()) { break; }
             if (attemp == 0) { cout << "Попытки закончились. Человечек повесился :("; }
         }
-        ofstream out("leaderboard.txt", ios::out);
+        ofstream out("leaderboard.txt", ios::app);
         if (out.is_open()) { 
-            out << "Имя\tКол-во ошибок\n";
-            out << name << "\t: " << 10 - attemp; 
+            out << name << "\t: " << 10 - attemp << endl; 
         }
         cout << "Продолжить? (да-1/нет-2)\n";
         int input;
         cin >> input;
-        if (input == 1) { continue; }
-        else { break; }
+        if (input == 1) {
+            attemp = 10, count = 0;
+            random = rand() % n + 1;
+            for (int i = 0; i < random; i++)
+            {
+                getline(in, word);
+            }
+            cout << "Слово: " << word << endl;
+            char* guess = new char[word.length() + 1];
+            guess = &word[0];
+            continue;
+        }
+        else if(input == 2){ break; }
+        else { cout << "Ошибка."; break; }
     }
     return 0;
 }
